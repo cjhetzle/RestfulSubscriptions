@@ -9,7 +9,7 @@ public class Invoices {
 
 	@GET
 	@Produces(MediaType.TEXT_HTML)
-	public String testDir() {
+	public String getDir() {
 		return "Connected";
 	}
 }
