@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {IUser} from '@paypal/services/api-interfaces/iuser';
 import {ICartItem} from '@paypal/services/api-interfaces/icart-item';
 import {IService} from './api-interfaces/iservice';
+import {environment} from 'projects/Paypal/src/environments/environment';
 
 /**
  * paypal service class interacts with the restful api
@@ -25,7 +26,6 @@ export class PaypalService {
   public SetUser(emailAddress: string, firstName: string, lastName: string): void {
     console.log(emailAddress);
     this.user = {emailAddress, firstName, lastName};
-    console.log(this.user);
   }
 
   /**
@@ -50,13 +50,29 @@ export class PaypalService {
    */
   public GetAvaliableService(): IService[] {
     if (this.avaliableServices === undefined) {
-      this.httpClient.get('/assets/services.json').subscribe((services: IService[]) => {
+      this.httpClient.get(environment.apiEndpoint + 'services').subscribe((services: IService[]) => {
         this.avaliableServices = services;
       }, (error: any) => {
         // pass
       });
     }
     return this.avaliableServices;
+  }
+
+  public PurchaseCart(): boolean {
+    let success: boolean = false;
+    const services: IService[] = [];
+    this.cart.forEach((element) => {
+      services.push(
+          this.avaliableServices.filter((x) => {
+            return x.id == element.id;
+          })[0],
+      );
+    });
+    this.httpClient.post(environment.apiEndpoint + 'services', services).subscribe(() => {
+      success = true;
+    });
+    return success;
   }
 
   /**
