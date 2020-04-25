@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {PaypalService} from '@paypal/services/paypal.service';
-import { Router } from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-
   private isNewUser: boolean = false;
-  public password: string = "";
-  public reEnterPassword: string = "";
-  public emailAddress: string = "";
-  public firstName: string = "";
-  public lastName: string = "";
+  public password: string = '';
+  public reEnterPassword: string = '';
+  public emailAddress: string = '';
+  public firstName: string = '';
+  public lastName: string = '';
 
   constructor(private paypalService: PaypalService, private router: Router) { }
 
@@ -22,7 +21,7 @@ export class LoginComponent implements OnInit {
   }
 
   public IsNewUser(): boolean {
-    return this.isNewUser
+    return this.isNewUser;
   }
 
   public OnSignUp(): void {
@@ -35,6 +34,6 @@ export class LoginComponent implements OnInit {
   }
 
   public DoPasswordsMatch(): boolean {
-    return this.password !== "" && this.reEnterPassword === this.password;
+    return this.password !== '' && this.reEnterPassword === this.password;
   }
 }

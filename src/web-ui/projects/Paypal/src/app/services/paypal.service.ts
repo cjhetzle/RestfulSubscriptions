@@ -1,34 +1,55 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {IUser} from '@paypal/services/api-interfaces/iuser';
 import {ICartItem} from '@paypal/services/api-interfaces/icart-item';
-import { IService } from './api-interfaces/iservice';
+import {IService} from './api-interfaces/iservice';
 
+/**
+ * paypal service class interacts with the restful api
+ */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PaypalService {
   private user: IUser;
   private avaliableServices: IService[];
   private cart: ICartItem[] = [];
 
+  /**
+   * sets the current user/ adds a new user
+   * will probably change to email, password
+   * @param {string} emailAddress a user's email address
+   * @param {string} firstName a user's first name
+   * @param {string} lastName a user's last name
+   */
   public SetUser(emailAddress: string, firstName: string, lastName: string): void {
     console.log(emailAddress);
     this.user = {emailAddress, firstName, lastName};
     console.log(this.user);
   }
 
+  /**
+   * get the current uesr
+   * @return {IUser} the current user
+   */
   public GetUser(): IUser {
     return this.user;
   }
 
+  /**
+   * is the  user logged in?
+   * @return {boolean} true if the user is logged in
+   */
   public IsLoggedIn(): boolean {
     return this.user !== undefined;
   }
 
+  /**
+   * gets the list of services a user can purchase
+   * @return {IService} a list of services
+   */
   public GetAvaliableService(): IService[] {
-    if (this.avaliableServices === undefined)
-    {
+    if (this.avaliableServices === undefined) {
       this.httpClient.get('/assets/services.json').subscribe((services: IService[]) => {
         this.avaliableServices = services;
       }, (error: any) => {
@@ -38,34 +59,49 @@ export class PaypalService {
     return this.avaliableServices;
   }
 
+  /**
+   * adds a service to the checkout cart
+   * @param {IService} service item to add to the cart
+   */
   public AddItemToCart(service: IService): void {
-    const cartItem: ICartItem = {price: service.price, id: service.id, name:service.name};
+    const cartItem: ICartItem = {price: service.price, id: service.id, name: service.name};
     if (this.cart.filter((value: ICartItem) => value.id === cartItem.id).length > 0) {
       return;
     }
     this.cart.push(cartItem);
   }
 
+  /**
+   * removes and item from the cart
+   * @param {ICartItem} cartItem item to remove from the cart
+   */
   public RemoveItemFromCart(cartItem: ICartItem): void {
     const templist = [];
-    while(this.cart.length > 0) {
-      const item = this.cart.pop()
+    while (this.cart.length > 0) {
+      const item = this.cart.pop();
       if (item.id === cartItem.id) {
-      }
-      else {
+      } else {
         templist.push(item);
       }
     }
     this.cart = templist;
   }
 
+  /**
+   * gets a list of items in the user's cart
+   * @return {ICartItem[]} a list of items in the cart
+   */
   public GetCart(): ICartItem[] {
-    return this.cart
+    return this.cart;
   }
 
+  /**
+   * calculated the total price of the items in the cart
+   * @return {number} total cost of cart items
+   */
   public TotalCost(): number {
-    var total = 0;
-    this.cart.forEach(element => {
+    let total = 0;
+    this.cart.forEach((element) => {
       total += element.price;
     });
     return total;
