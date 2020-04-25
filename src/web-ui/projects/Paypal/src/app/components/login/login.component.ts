@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {PaypalService} from '@paypal/services/paypal.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +16,7 @@ export class LoginComponent implements OnInit {
   public firstName: string = "";
   public lastName: string = "";
 
-  constructor() { }
+  constructor(private paypalService: PaypalService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -28,6 +30,11 @@ export class LoginComponent implements OnInit {
   }
 
   public OnSubmit(): void {
-    
+    this.paypalService.SetUser(this.emailAddress, this.firstName, this.lastName);
+    this.router.navigate(['/']);
+  }
+
+  public DoPasswordsMatch(): boolean {
+    return this.password !== "" && this.reEnterPassword === this.password;
   }
 }

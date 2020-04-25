@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PaypalService } from '@paypal/services/paypal.service';
 
 @Component({
   selector: 'app-top-bar',
@@ -7,9 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopBarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private paypalService: PaypalService) { }
 
   ngOnInit(): void {
   }
-
+  public IsLoggedIn(): boolean {
+    return this.paypalService.IsLoggedIn();
+  }
 }
